@@ -2,6 +2,7 @@ import { Component } from "react";
 import { AppContainer } from "components/App/App.styled";
 import { SearchBar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
+import { Button } from "components/Button/Button";
 
 const axios = require('axios').default;
 
@@ -12,19 +13,22 @@ const API_KEY = '28478003-fd100ae876bc055f23610276b';
 export class App extends Component {
   state = {
     searchName: "",
-    page: 0,
+    page: 1,
     hits: [],
   };
 
   componentDidUpdate = (prevProps, prevState) => {
     if (prevState.page !== this.state.page) {
-       console.log(this.state.hits)
     }
   };
 
+  onLoadMore = () => {
+    this.setState({page: this.state.page + 1}, this.fetchImage);
+}
+
   onSearchImages = ev => {
     const searchName = ev.currentTarget[1].value.split(' ').join('+');
-    this.setState({ page: this.state.page + 1, searchName: searchName }, this.fetchImage);
+    this.setState({ searchName: searchName }, this.fetchImage);
   };
 
     fetchImage = async () => {
@@ -45,6 +49,9 @@ export class App extends Component {
       <AppContainer>
         <SearchBar onSubmit={this.onSearchImages} />
         <ImageGallery images={this.state.hits} />
+        {this.state.hits.length > 0 && (
+          <Button onLoadMore={this.onLoadMore} />
+        )}
       </AppContainer>
     );
   }

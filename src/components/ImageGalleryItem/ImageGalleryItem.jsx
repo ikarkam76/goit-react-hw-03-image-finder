@@ -3,7 +3,7 @@ import { Image, ImageItem } from "./ImageGalleryItem.styled";
 
 export const ImageGalleryItem = ({ id, webformatURL, tags }) => {
   return (
-    <ImageItem key={id}>
+    <ImageItem>
       <Image src={webformatURL} alt={tags} />
     </ImageItem>
   );
