@@ -5,10 +5,17 @@ import { SearchBar } from "components/Searchbar/Searchbar";
 
 export class App extends Component {
 
+
+  onSearchName = (ev) => {
+    ev.preventDefault();
+    console.log(ev.currentTarget[1].value);
+  }
+
+
   render() {
     return (
       <AppContainer>
-        <SearchBar />
+        <SearchBar onSubmit={this.onSearchName} />
       </AppContainer>
     )
   }
