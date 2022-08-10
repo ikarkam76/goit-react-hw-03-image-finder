@@ -1,23 +1,51 @@
 import { Component } from "react";
 import { AppContainer } from "components/App/App.styled";
 import { SearchBar } from "components/Searchbar/Searchbar";
+import { ImageGallery } from "components/ImageGallery/ImageGallery";
 
+const axios = require('axios').default;
+
+
+const API_URL = 'https://pixabay.com/api/';
+const API_KEY = '28478003-fd100ae876bc055f23610276b';
 
 export class App extends Component {
+  state = {
+    searchName: "",
+    page: 0,
+    hits: [],
+  };
 
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevState.page !== this.state.page) {
+       console.log(this.state.hits)
+    }
+  };
 
-  onSearchName = (ev) => {
-    ev.preventDefault();
-    console.log(ev.currentTarget[1].value);
-  }
+  onSearchImages = ev => {
+    const searchName = ev.currentTarget[1].value.split(' ').join('+');
+    this.setState({ page: this.state.page + 1, searchName: searchName }, this.fetchImage);
+  };
 
+    fetchImage = async () => {
+      try {
+        const res = await axios.get(`${API_URL}?q=${this.state.searchName}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+        );
+        return this.setState({
+          hits: [...this.state.hits, ...res.data.hits],
+        });
+      } catch (error) {
+        return console.error(error.message);
+      }
+    }
+  
 
   render() {
     return (
       <AppContainer>
-        <SearchBar onSubmit={this.onSearchName} />
+        <SearchBar onSubmit={this.onSearchImages} />
+        <ImageGallery images={this.state.hits} />
       </AppContainer>
-    )
+    );
   }
-
 };

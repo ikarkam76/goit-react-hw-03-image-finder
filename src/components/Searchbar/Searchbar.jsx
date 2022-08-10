@@ -6,7 +6,11 @@ import { FcSearch } from 'react-icons/fc';
 export const SearchBar = ({onSubmit}) => {
   return (
     <Searchbar>
-      <Form onSubmit={(ev) => onSubmit(ev)}>
+      <Form onSubmit={(ev) => {
+        ev.preventDefault();
+        onSubmit(ev);
+        ev.currentTarget.reset();
+      }}>
         <Button type="submit">
           <ButtonLabel>Search</ButtonLabel>
           <FcSearch />
