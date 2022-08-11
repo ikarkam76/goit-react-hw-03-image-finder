@@ -5,35 +5,40 @@ import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { Button } from "components/Button/Button";
 import { Loader } from "components/Loader/Loader";
 import { getImages } from "components/services/getImages";
+import { Modal } from "components/Modal/Modal";
 
 export class App extends Component {
   state = {
-    searchName: "",
+    searchName: '',
     page: 0,
     hits: [],
     visible: false,
+    showModal: false,
   };
 
   componentDidUpdate = (_, prevState) => {
     if (prevState.searchName !== this.state.searchName) {
-      this.setState({hits: [], page: 1})
+      this.setState({ hits: [], page: 1 });
     }
   };
 
   fetchImages = () => {
-    getImages(this.state.searchName, this.state.page).then(val =>
-      this.setState({
-        hits: [...this.state.hits, ...val.data.hits],
-        visible: false,
-      })).catch(() => alert('Something went wrong'))
-  }
+    getImages(this.state.searchName, this.state.page)
+      .then(val =>
+        this.setState({
+          hits: [...this.state.hits, ...val.data.hits],
+          visible: false,
+        })
+      )
+      .catch(() => alert('Something went wrong'));
+  };
 
   onLoadMore = () => {
     this.setState(
       { page: this.state.page + 1, visible: true },
-      this.fetchImages,
+      this.fetchImages
     );
-}
+  };
 
   handleSubmit = ev => {
     const searchName = ev.currentTarget[1].value.trim().split(' ').join('+');
@@ -42,18 +47,28 @@ export class App extends Component {
     } else {
       this.setState(
         { page: this.state.page + 1, searchName: searchName, visible: true },
-        this.fetchImages,
+        this.fetchImages
       );
     }
   };
 
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+
   render() {
+    const { hits, visible, showModal } = this.state;
     return (
       <AppContainer>
+        {showModal && (
+          <Modal onClose={this.toggleModal}>
+            <h2>Lorem ipsum dolor sit amet.</h2>
+          </Modal>
+        )}
         <SearchBar onSubmit={this.handleSubmit} />
-        <ImageGallery images={this.state.hits} />
-        {this.state.hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
-        <Loader visible={this.state.visible} />
+        <ImageGallery images={hits} onOpen={this.toggleModal} />
+        {hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
+        <Loader visible={visible} />
       </AppContainer>
     );
   }
