@@ -9,7 +9,6 @@ export const SearchBar = ({onSubmit}) => {
       <Form onSubmit={(ev) => {
         ev.preventDefault();
         onSubmit(ev);
-        ev.currentTarget.reset();
       }}>
         <Button type="submit">
           <ButtonLabel>Search</ButtonLabel>

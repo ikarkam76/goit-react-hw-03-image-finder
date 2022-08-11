@@ -5,8 +5,13 @@ import { Gallery } from "./ImageGallery.styled";
 export const ImageGallery = ({ images }) => {
   return (
     <Gallery>
-      {images.map(({ id, webformatURL, tags }) => (
-        <ImageGalleryItem key={id} webformatURL={webformatURL} tags={tags} />
+      {images.map(({ id, webformatURL, tags, largeImageURL }) => (
+        <ImageGalleryItem
+          key={id}
+          webformatURL={webformatURL}
+          tags={tags}
+          largeImageURL={largeImageURL}
+        />
       ))}
     </Gallery>
   );
