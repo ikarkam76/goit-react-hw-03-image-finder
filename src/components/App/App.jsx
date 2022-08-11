@@ -7,19 +7,18 @@ import { Loader } from "components/Loader/Loader";
 
 const axios = require('axios').default;
 
-
 const API_URL = 'https://pixabay.com/api/';
 const API_KEY = '28478003-fd100ae876bc055f23610276b';
 
 export class App extends Component {
   state = {
     searchName: "",
-    page: 1,
+    page: 0,
     hits: [],
     visible: false,
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = (_, prevState) => {
     if (prevState.searchName !== this.state.searchName) {
       this.setState({hits: [], page: 1})
     }
@@ -30,11 +29,14 @@ export class App extends Component {
 }
 
   handleSubmit = ev => {
-    const searchName = ev.currentTarget[1].value.split(' ').join('+');
+    const searchName = ev.currentTarget[1].value.trim().split(' ').join('+');
     if (!searchName) {
       alert('Wow! The search field must not be empty!');
     } else {
-      this.setState({ searchName: searchName, visible: true }, this.fetchImage);
+      this.setState(
+        { page: this.state.page + 1, searchName: searchName, visible: true },
+        this.fetchImage
+      );
     }
   };
 

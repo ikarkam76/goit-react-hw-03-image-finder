@@ -1,13 +1,17 @@
 import React from "react";
 import { ModalWindow, Overlay } from "./Modal.styled";
 
-export const Modal = (url, tags) => {
+export const Modal = ({largeImageURL, tags, onClose}) => {
   return (
-    <Overlay>
+    <Overlay onClick={(ev) => {
+      if (ev.target === ev.currentTarget) {
+        onClose(false);
+      }
+    }}>
       <ModalWindow>
-        <img src={url} alt={tags} />
+        <img src={largeImageURL} alt={tags} />
       </ModalWindow>
     </Overlay>
   );
-}
+};
 
