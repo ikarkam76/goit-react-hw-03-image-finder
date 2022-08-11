@@ -4,11 +4,7 @@ import { SearchBar } from "components/Searchbar/Searchbar";
 import { ImageGallery } from "components/ImageGallery/ImageGallery";
 import { Button } from "components/Button/Button";
 import { Loader } from "components/Loader/Loader";
-
-const axios = require('axios').default;
-
-const API_URL = 'https://pixabay.com/api/';
-const API_KEY = '28478003-fd100ae876bc055f23610276b';
+import { getImages } from "components/services/getImages";
 
 export class App extends Component {
   state = {
@@ -24,8 +20,19 @@ export class App extends Component {
     }
   };
 
+  fetchImages = () => {
+    getImages(this.state.searchName, this.state.page).then(val =>
+      this.setState({
+        hits: [...this.state.hits, ...val.data.hits],
+        visible: false,
+      })).catch(() => alert('Something went wrong'))
+  }
+
   onLoadMore = () => {
-    this.setState({page: this.state.page + 1, visible: true}, this.fetchImage);
+    this.setState(
+      { page: this.state.page + 1, visible: true },
+      this.fetchImages,
+    );
 }
 
   handleSubmit = ev => {
@@ -35,24 +42,10 @@ export class App extends Component {
     } else {
       this.setState(
         { page: this.state.page + 1, searchName: searchName, visible: true },
-        this.fetchImage
+        this.fetchImages,
       );
     }
   };
-
-  fetchImage = async () => {
-    try {
-      const res = await axios.get(`${API_URL}?q=${this.state.searchName}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      );
-      return this.setState({
-        hits: [...this.state.hits, ...res.data.hits], 
-        visible: false
-      });
-    } catch (error) {
-      return console.error(error.message);
-    }
-  }
-  
 
   render() {
     return (
