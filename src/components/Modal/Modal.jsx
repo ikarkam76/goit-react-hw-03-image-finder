@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { ModalWindow, Overlay } from "./Modal.styled";
 
-
-
 export class Modal extends Component {
 
   componentDidMount() {
@@ -12,7 +10,6 @@ export class Modal extends Component {
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
-  
 
   handleKeyDown = ev => {
     if (ev.code === 'Escape') {

@@ -14,6 +14,7 @@ export class App extends Component {
     hits: [],
     visible: false,
     showModal: false,
+    modalImage: '',
   };
 
   componentDidUpdate = (_, prevState) => {
@@ -56,17 +57,25 @@ export class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
+  handleOpenModal = (ev) => {
+    this.toggleModal();
+    const modalImage = this.state.hits.find(
+      item => item.webformatURL === ev.target.src
+    ).largeImageURL;
+    this.setState({ modalImage });
+  };
+
   render() {
-    const { hits, visible, showModal } = this.state;
+    const { hits, visible, showModal, modalImage } = this.state;
     return (
       <AppContainer>
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <h2>Lorem ipsum dolor sit amet.</h2>
+            <img src={modalImage} alt={hits.tags} />
           </Modal>
         )}
         <SearchBar onSubmit={this.handleSubmit} />
-        <ImageGallery images={hits} onOpen={this.toggleModal} />
+        <ImageGallery images={hits} onOpen={ev => this.handleOpenModal(ev)} />
         {hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
         <Loader visible={visible} />
       </AppContainer>
