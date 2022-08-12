@@ -59,9 +59,9 @@ export class App extends Component {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  handleOpenModal = (ev) => {
+  handleOpenModal = (largeImageURL) => {
     this.toggleModal();
-    this.setState({ largeImageURL: ev });
+    this.setState({ largeImageURL: largeImageURL });
   };
 
   render() {
@@ -74,7 +74,10 @@ export class App extends Component {
           </Modal>
         )}
         <SearchBar onSubmit={this.handleSubmit} />
-        <ImageGallery images={hits} onOpen={ev => this.handleOpenModal(ev)} />
+        <ImageGallery
+          images={hits}
+          onOpen={ev => this.handleOpenModal(largeImageURL)}
+        />
         {hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
         <Loader visible={showLoader} />
       </AppContainer>
