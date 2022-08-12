@@ -5,12 +5,12 @@ import { Gallery } from "./ImageGallery.styled";
 export const ImageGallery = ({ images, onOpen }) => {
   return (
     <Gallery>
-      {images.map(({ id, webformatURL, tags }) => (
+      {images.map(({ id, webformatURL, tags, largeImageURL }) => (
         <ImageGalleryItem
           key={id}
           webformatURL={webformatURL}
           tags={tags}
-          onOpen={onOpen}
+          onOpen={() => onOpen(largeImageURL)}
         />
       ))}
     </Gallery>

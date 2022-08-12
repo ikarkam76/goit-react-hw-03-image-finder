@@ -12,15 +12,19 @@ export class App extends Component {
     searchName: '',
     page: 0,
     hits: [],
-    visible: false,
+    isLoading: false,
     showModal: false,
-    modalImage: '',
+    largeImageURL: '',
   };
 
   componentDidUpdate = (_, prevState) => {
     if (prevState.searchName !== this.state.searchName) {
-      this.setState({ hits: [], page: 1 });
-    }
+      this.setState({ hits: [], page: 1 }, this.fetchImages());
+    } else {
+      if (prevState.page !== this.state.page) {
+      this.fetchImages();
+    }}
+    
   };
 
   fetchImages = () => {
@@ -28,7 +32,7 @@ export class App extends Component {
       .then(val =>
         this.setState({
           hits: [...this.state.hits, ...val.data.hits],
-          visible: false,
+          isLoading: false,
         })
       )
       .catch(() => alert('Something went wrong'));
@@ -36,8 +40,7 @@ export class App extends Component {
 
   onLoadMore = () => {
     this.setState(
-      { page: this.state.page + 1, visible: true },
-      this.fetchImages
+      { page: this.state.page + 1, isLoading: true }
     );
   };
 
@@ -47,8 +50,7 @@ export class App extends Component {
       alert('Wow! The search field must not be empty!');
     } else {
       this.setState(
-        { page: this.state.page + 1, searchName: searchName, visible: true },
-        this.fetchImages
+        { page: this.state.page + 1, searchName: searchName, isLoading: true }
       );
     }
   };
@@ -59,25 +61,22 @@ export class App extends Component {
 
   handleOpenModal = (ev) => {
     this.toggleModal();
-    const modalImage = this.state.hits.find(
-      item => item.webformatURL === ev.target.src
-    ).largeImageURL;
-    this.setState({ modalImage });
+    this.setState({ largeImageURL: ev });
   };
 
   render() {
-    const { hits, visible, showModal, modalImage } = this.state;
+    const { hits, isLoading, showModal, largeImageURL } = this.state;
     return (
       <AppContainer>
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <img src={modalImage} alt={hits.tags} />
+            <img src={largeImageURL} alt={hits.tags} />
           </Modal>
         )}
         <SearchBar onSubmit={this.handleSubmit} />
         <ImageGallery images={hits} onOpen={ev => this.handleOpenModal(ev)} />
         {hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
-        <Loader visible={visible} />
+        <Loader visible={isLoading} />
       </AppContainer>
     );
   }
