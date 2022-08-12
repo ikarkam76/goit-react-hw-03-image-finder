@@ -12,7 +12,7 @@ export class App extends Component {
     searchName: '',
     page: 0,
     hits: [],
-    isLoading: false,
+    showLoader: false,
     showModal: false,
     largeImageURL: '',
   };
@@ -32,7 +32,7 @@ export class App extends Component {
       .then(val =>
         this.setState({
           hits: [...this.state.hits, ...val.data.hits],
-          isLoading: false,
+          showLoader: false,
         })
       )
       .catch(() => alert('Something went wrong'));
@@ -40,7 +40,7 @@ export class App extends Component {
 
   onLoadMore = () => {
     this.setState(
-      { page: this.state.page + 1, isLoading: true }
+      { page: this.state.page + 1, showLoader: true }
     );
   };
 
@@ -50,7 +50,7 @@ export class App extends Component {
       alert('Wow! The search field must not be empty!');
     } else {
       this.setState(
-        { page: this.state.page + 1, searchName: searchName, isLoading: true }
+        { page: this.state.page + 1, searchName: searchName, showLoader: true }
       );
     }
   };
@@ -65,7 +65,7 @@ export class App extends Component {
   };
 
   render() {
-    const { hits, isLoading, showModal, largeImageURL } = this.state;
+    const { hits, showLoader, showModal, largeImageURL } = this.state;
     return (
       <AppContainer>
         {showModal && (
@@ -76,7 +76,7 @@ export class App extends Component {
         <SearchBar onSubmit={this.handleSubmit} />
         <ImageGallery images={hits} onOpen={ev => this.handleOpenModal(ev)} />
         {hits.length > 0 && <Button onLoadMore={this.onLoadMore} />}
-        <Loader visible={isLoading} />
+        <Loader visible={showLoader} />
       </AppContainer>
     );
   }
